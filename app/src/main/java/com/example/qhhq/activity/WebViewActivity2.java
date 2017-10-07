@@ -68,15 +68,6 @@ public class WebViewActivity2 extends Activity implements View.OnClickListener{
     RelativeLayout refreshArrowLL;
     RelativeLayout menuArrowLL;
 
-    private PopupWindow mPopWindow;
-
-    public static final int FILECHOOSER_RESULTCODE = 1;
-    private static final int REQ_CAMERA = FILECHOOSER_RESULTCODE+1;
-    private static final int REQ_CHOOSE = REQ_CAMERA+1;
-
-    ValueCallback<Uri> mUploadMessage;
-    ValueCallback<Uri[]> mFilePathCallback;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -208,30 +199,30 @@ public class WebViewActivity2 extends Activity implements View.OnClickListener{
             mWebView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
         mWebView.setWebChromeClient(new WebChromeClient(){
-            //选择图片
-            public boolean onShowFileChooser(
-                    WebView webView, ValueCallback<Uri[]> filePathCallback,
-                    WebChromeClient.FileChooserParams fileChooserParams) {
-                if (mFilePathCallback != null)
-                    return true;
-                mFilePathCallback = filePathCallback;
-                selectImage();
-                return true;
-            }
-            // For Android 3.0+
-            public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType) {
-                if (mUploadMessage != null) return;
-                mUploadMessage = uploadMsg;
-                selectImage();
-            }
-            // For Android < 3.0
-            public void openFileChooser(ValueCallback<Uri> uploadMsg) {
-                openFileChooser( uploadMsg, "" );
-            }
-            // For Android  > 4.1.1
-            public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
-                openFileChooser(uploadMsg, acceptType);
-            }
+//            //选择图片
+//            public boolean onShowFileChooser(
+//                    WebView webView, ValueCallback<Uri[]> filePathCallback,
+//                    WebChromeClient.FileChooserParams fileChooserParams) {
+//                if (mFilePathCallback != null)
+//                    return true;
+//                mFilePathCallback = filePathCallback;
+//                selectImage();
+//                return true;
+//            }
+//            // For Android 3.0+
+//            public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType) {
+//                if (mUploadMessage != null) return;
+//                mUploadMessage = uploadMsg;
+//                selectImage();
+//            }
+//            // For Android < 3.0
+//            public void openFileChooser(ValueCallback<Uri> uploadMsg) {
+//                openFileChooser( uploadMsg, "" );
+//            }
+//            // For Android  > 4.1.1
+//            public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
+//                openFileChooser(uploadMsg, acceptType);
+//            }
 
             //重写标题
             @Override
@@ -316,68 +307,6 @@ public class WebViewActivity2 extends Activity implements View.OnClickListener{
         mWebView.loadUrl(url);
     }
 
-    /**
-     * 检查SD卡是否存在
-     *
-     * @return
-     */
-    public final boolean checkSDcard() {
-        boolean flag = Environment.getExternalStorageState().equals(
-                Environment.MEDIA_MOUNTED);
-        if (!flag) {
-            Toast.makeText(this, "请插入手机存储卡再使用本功能",Toast.LENGTH_SHORT).show();
-        }
-        return flag;
-    }
-    String compressPath = "";
-
-    protected final void selectImage() {
-        if (!checkSDcard())
-            return;
-        chosePic();
-    }
-
-    /**
-     * 本地相册选择图片
-     */
-    private void chosePic() {
-        FileUtils.delFile(compressPath);
-        Intent innerIntent = new Intent(Intent.ACTION_GET_CONTENT); // "android.intent.action.GET_CONTENT"
-        String IMAGE_UNSPECIFIED = "image/*";
-        innerIntent.setType(IMAGE_UNSPECIFIED); // 查看类型
-        Intent wrapperIntent = Intent.createChooser(innerIntent, null);
-        startActivityForResult(wrapperIntent, REQ_CHOOSE);
-    }
-
-    /**
-     * 选择照片后结束
-     *
-     * @param data
-     */
-    private Uri afterChosePic(Intent data) {
-
-        // 获取图片的路径：
-        String[] proj = { MediaStore.Images.Media.DATA };
-        // 好像是android多媒体数据库的封装接口，具体的看Android文档
-        Cursor cursor = managedQuery(data.getData(), proj, null, null, null);
-        if(cursor == null ){
-            Toast.makeText(this, "上传的图片仅支持png或jpg格式",Toast.LENGTH_SHORT).show();
-            return null;
-        }
-        // 按我个人理解 这个是获得用户选择的图片的索引值
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        // 将光标移至开头 ，这个很重要，不小心很容易引起越界
-        cursor.moveToFirst();
-        // 最后根据索引值获取图片路径
-        String path = cursor.getString(column_index);
-        if(path != null && (path.endsWith(".png")||path.endsWith(".PNG")||path.endsWith(".jpg")||path.endsWith(".JPG"))){
-            File newFile = FileUtils.compressFile(path, compressPath);
-            return Uri.fromFile(newFile);
-        }else{
-            Toast.makeText(this, "上传的图片仅支持png或jpg格式",Toast.LENGTH_SHORT).show();
-        }
-        return null;
-    }
 
     /**
      * 返回文件选择
@@ -385,22 +314,7 @@ public class WebViewActivity2 extends Activity implements View.OnClickListener{
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 
-        Uri uri = null;
-        if(requestCode == REQ_CHOOSE){
-            uri = afterChosePic(intent);
-        }
-        if(mFilePathCallback != null){
-            Uri[] uris = new Uri[1];
-            uris[0] = uri;
-            mFilePathCallback.onReceiveValue(uris);
-        }else {
-            mUploadMessage.onReceiveValue(uri);
-        }
-        mFilePathCallback = null;
-        mUploadMessage = null;
-        super.onActivityResult(requestCode, resultCode, intent);
     }
-
 
         /**
          * 清除WebView缓存
@@ -431,8 +345,6 @@ public class WebViewActivity2 extends Activity implements View.OnClickListener{
     }
 
     public class myWebViewClient extends WebViewClient {
-
-
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
