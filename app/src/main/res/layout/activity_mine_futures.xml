@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+   >
+
+    <include
+        layout="@layout/main_title"
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+    </include>
+
+    <ImageView
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:background="@drawable/mine_logo"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="当前版本1.0"
+        android:gravity="center"
+        android:layout_marginTop="5dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="1.期货(Futures)与现货完全不同，现货是实实在在可以交易的货(商品)，期货主要不是货，而是以某种大宗产品如棉花、大豆、石油等及金融资产如股票、债券等为标的标准化可交易合约。因此，这个标的物可以是某种商品(例如黄金、原油、农产品)，也可以是金融工具。"
+        android:gravity="left"
+        android:layout_marginTop="10dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="2.买卖期货的合同或协议叫做期货合约。"
+        android:gravity="left"
+        android:layout_marginTop="10dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="3.买卖期货的场所叫做期货市场。"
+        android:gravity="left"
+        android:layout_marginTop="10dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="4.投资者可以对期货进行投资或投机。大部分人认为对期货的不恰当投机行为，例如无货沽空，可以导致金融市场的动荡，这是不正确的看法，可以同时做空做多，才是健康正常的交易市场。"
+        android:gravity="left"
+        android:layout_marginTop="10dp"/>
+
+</LinearLayout>

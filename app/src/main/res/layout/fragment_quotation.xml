@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/myRed"
+        android:gravity="center">
+
+
+        <RadioGroup
+            android:id="@+id/rg_quotation_fragment"
+            android:layout_margin="10dp"
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+            <RadioButton
+                android:id="@+id/rb_first_title_quotation_fragment"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:button="@null"
+                android:text="@string/quotation_first_title"
+                android:checked="true"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:paddingTop="6dip"
+                android:paddingBottom="6dip"
+                android:textColor="@drawable/title_text_sel"
+                android:background="@drawable/rb_bg_01"/>
+
+            <RadioButton
+                android:id="@+id/rb_second_title_quotation_fragment"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:text="汇率"
+                android:button="@null"
+                android:gravity="center"
+                android:textSize="16sp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:textColor="@drawable/title_text_sel"
+                android:background="@drawable/rb_bg_02" />
+        </RadioGroup>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/fl_radio_show_quot"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        ></FrameLayout>
+
+
+</LinearLayout>

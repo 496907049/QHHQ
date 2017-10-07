@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+   >
+
+    <FrameLayout
+        android:id="@+id/fl_radio_show"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"></FrameLayout>
+
+
+    <RadioGroup
+        android:id="@+id/rg_radio_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:background="@drawable/linear_layout_frame"
+        >
+
+        <RadioButton
+            android:id="@+id/rb_by_home_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawablePadding="5dp"
+            android:drawableTop="@drawable/home_pager_button_selector"
+            android:checked="true"
+            android:gravity="center"
+            android:text="@string/home_page"
+            android:textColor="@drawable/radio_button_selector" />
+
+        <RadioButton
+            android:id="@+id/rb_radio_quotation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawablePadding="5dp"
+            android:gravity="center"
+            android:drawableTop="@drawable/quotation_button_selector"
+            android:text="@string/quotation"
+            android:textColor="@drawable/radio_button_selector"/>
+
+        <RadioButton
+            android:id="@+id/rb_radio_live_broadcast"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawablePadding="5dp"
+            android:gravity="center"
+            android:drawableTop="@drawable/live_broadcast_button_selector"
+            android:text="@string/live_broadcast"
+            android:textColor="@drawable/radio_button_selector"/>
+
+        <RadioButton
+            android:id="@+id/rb_radio_find"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawablePadding="5dp"
+            android:gravity="center"
+            android:drawableTop="@drawable/find_button_selector"
+            android:text="@string/find"
+            android:textColor="@drawable/radio_button_selector"/>
+
+        <RadioButton
+            android:id="@+id/rb_radio_mine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawablePadding="5dp"
+            android:gravity="center"
+            android:drawableTop="@drawable/mine_button_selector"
+            android:text="@string/mine"
+            android:textColor="@drawable/radio_button_selector"
+            />
+    </RadioGroup>
+
+</LinearLayout>

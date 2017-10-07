@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/myRed"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/pop_share"
+        android:layout_width="80dp"
+        android:layout_height="30dp"
+        android:text="分享"
+        android:textColor="@color/white"
+        android:gravity="center"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white"
+        />
+
+    <TextView
+        android:id="@+id/pop_message"
+        android:layout_width="80dp"
+        android:layout_height="30dp"
+        android:text="消息"
+        android:textColor="@color/white"
+        android:gravity="center"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white"/>
+
+    <TextView
+        android:id="@+id/pop_clear"
+        android:layout_width="80dp"
+        android:layout_height="30dp"
+        android:text="清除缓存"
+        android:textColor="@color/white"
+        android:gravity="center"/>
+
+
+
+</LinearLayout>

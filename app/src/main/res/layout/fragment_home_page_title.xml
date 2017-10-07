@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/five_btn"
+    android:gravity="center"
+    >
+
+    <ImageView
+        android:id="@+id/img_land"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/mine_white"
+        android:layout_marginLeft="15dp"/>
+
+    <TextView
+        android:id="@+id/tv_land"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/img_land"
+        android:layout_marginLeft="15dp"
+        android:layout_toRightOf="@id/img_land"
+        android:text="登入"
+        android:textColor="@color/white"/>
+
+    <ImageView
+        android:id="@+id/img_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/message_white"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="15dp"/>
+
+</RelativeLayout>
