@@ -33,7 +33,6 @@ import com.dou361.dialogui.DialogUIUtils;
 import com.dou361.dialogui.bean.TieBean;
 import com.dou361.dialogui.listener.DialogUIItemListener;
 import com.example.Util.Contants;
-import com.example.Util.FileUtils;
 import com.example.Util.HttpClientUtil;
 import com.example.Util.ToastUtils;
 import com.example.qhhq.R;
@@ -41,6 +40,7 @@ import com.example.qhhq.bean.FirstInterface;
 import com.example.qhhq.bean.JPushMessage;
 import com.example.qhhq.http.AsyncHttpResponseHandler;
 import com.example.qhhq.widagt.DownPicUtil;
+import com.example.qhhq.widagt.OpenFileChooserCallBack;
 import com.google.gson.Gson;
 
 import org.apache.http.Header;
@@ -51,13 +51,12 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.R.attr.data;
 
 /**
  * Created by asus01 on 2017/9/25.
  */
 
-public class WebViewActivity2 extends Activity implements View.OnClickListener{
+public class WebViewActivity2 extends Activity implements View.OnClickListener,OpenFileChooserCallBack {
 
     String url;
     private static final String APP_CACAHE_DIRNAME = "/webcache";
@@ -67,6 +66,11 @@ public class WebViewActivity2 extends Activity implements View.OnClickListener{
     RelativeLayout rightArrowLL;
     RelativeLayout refreshArrowLL;
     RelativeLayout menuArrowLL;
+
+    private static final int REQUEST_CODE_PICK_IMAGE = 0;
+    private static final int REQUEST_CODE_IMAGE_CAPTURE = 1;
+    private ValueCallback<Uri> mUploadMsg;
+    public ValueCallback<Uri[]> mUploadMessageForAndroid5;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -198,56 +202,7 @@ public class WebViewActivity2 extends Activity implements View.OnClickListener{
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {//5.0以上的手机https页面打不开图片
             mWebView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
-        mWebView.setWebChromeClient(new WebChromeClient(){
-//            //选择图片
-//            public boolean onShowFileChooser(
-//                    WebView webView, ValueCallback<Uri[]> filePathCallback,
-//                    WebChromeClient.FileChooserParams fileChooserParams) {
-//                if (mFilePathCallback != null)
-//                    return true;
-//                mFilePathCallback = filePathCallback;
-//                selectImage();
-//                return true;
-//            }
-//            // For Android 3.0+
-//            public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType) {
-//                if (mUploadMessage != null) return;
-//                mUploadMessage = uploadMsg;
-//                selectImage();
-//            }
-//            // For Android < 3.0
-//            public void openFileChooser(ValueCallback<Uri> uploadMsg) {
-//                openFileChooser( uploadMsg, "" );
-//            }
-//            // For Android  > 4.1.1
-//            public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
-//                openFileChooser(uploadMsg, acceptType);
-//            }
-
-            //重写标题
-            @Override
-            public boolean onJsAlert(WebView view, String url, final String message, JsResult result) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        new AlertDialog.Builder(WebViewActivity2.this)
-                                .setTitle("提示")
-                                .setMessage(""+message)
-                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                    }
-                                })
-                                .setNegativeButton("取消",null)
-                                .show();
-
-                    }
-                });
-                result.confirm();//这里必须调用，否则页面会阻塞造成假死
-                return true;
-            }
-        });
+        mWebView.setWebChromeClient(new ReWebChomeClient(this));
         mWebView.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
         mWebView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);  //设置 缓存模式
 // 开启 DOM storage API 功能
@@ -312,8 +267,150 @@ public class WebViewActivity2 extends Activity implements View.OnClickListener{
      * 返回文件选择
      */
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+        if (resultCode != Activity.RESULT_OK) {
+
+            if (mUploadMsg != null) {
+                mUploadMsg.onReceiveValue(null);
+                mUploadMsg = null;
+            }
+
+            if (mUploadMessageForAndroid5 != null) {
+                mUploadMessageForAndroid5.onReceiveValue(null);
+                mUploadMessageForAndroid5 = null;
+            }
+            return;
+        }
+
+        File temp = new File(Environment.getExternalStorageDirectory().getAbsoluteFile() + "/" + "pics" + "/temp.jpg");
+        if (mUploadMessageForAndroid5 != null) {
+
+            switch (requestCode) {
+                case REQUEST_CODE_IMAGE_CAPTURE:
+
+                    if (mUploadMessageForAndroid5 != null) {
+                        if (temp.exists()) {
+                            mUploadMessageForAndroid5.onReceiveValue(new Uri[]{Uri.fromFile(temp)});
+                        } else {
+                            mUploadMessageForAndroid5.onReceiveValue(new Uri[]{});
+                        }
+                    }
+                case REQUEST_CODE_PICK_IMAGE:
+
+                    try {
+                        final Uri result = (data == null || resultCode != RESULT_OK) ? null : data.getData();
+                        if (null != mUploadMessageForAndroid5) {
+                            if (result != null) {
+                                mUploadMessageForAndroid5.onReceiveValue(new Uri[]{result});
+                            } else {
+                                mUploadMessageForAndroid5.onReceiveValue(new Uri[]{});
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+            }
+        }
+
+
+        if (mUploadMsg != null) {
+
+            switch (requestCode) {
+                case REQUEST_CODE_IMAGE_CAPTURE:
+
+                    if (temp.exists()) {
+                        mUploadMsg.onReceiveValue(Uri.fromFile(temp));
+                    } else {
+                        mUploadMsg.onReceiveValue(null);
+                    }
+
+                    Uri uri = Uri.fromFile(temp);
+                    mUploadMsg.onReceiveValue(uri);
+
+                case REQUEST_CODE_PICK_IMAGE:
+
+                    final Uri result = (data == null || resultCode != RESULT_OK) ? null : data.getData();
+                    try {
+                        //1、
+                        mUploadMsg.onReceiveValue(result);
+                        // 2、
+                        // PicAsyncTask(result);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void openFileChooserCallBack(ValueCallback<Uri> uploadMsg, String acceptType) {
+        mUploadMsg = uploadMsg;
+        showOptions();
+    }
+
+    @Override
+    public void openFileChooserCallBack(ValueCallback<Uri[]> uploadMsg, WebChromeClient.FileChooserParams fileChooserParams) {
+        mUploadMessageForAndroid5 = uploadMsg;
+        showOptions();
+    }
+
+
+    public class ReWebChomeClient extends WebChromeClient  {
+
+        private OpenFileChooserCallBack mOpenFileChooserCallBack;
+
+        public ReWebChomeClient(OpenFileChooserCallBack openFileChooserCallBack) {
+            mOpenFileChooserCallBack = openFileChooserCallBack;
+        }
+
+        // For Android < 3.0
+        public void openFileChooser(ValueCallback<Uri> uploadMsg) {
+            openFileChooser(uploadMsg, "");
+        }
+
+        //For Android 3.0+
+        public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType) {
+            mOpenFileChooserCallBack.openFileChooserCallBack(uploadMsg, acceptType);
+        }
+
+        // For Android  > 4.1.1
+        public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
+            openFileChooser(uploadMsg, acceptType);
+        }
+
+        // For Android > 5.0
+        public boolean onShowFileChooser (WebView webView, ValueCallback<Uri[]> uploadMsg, WebChromeClient.FileChooserParams fileChooserParams) {
+            mOpenFileChooserCallBack.openFileChooserCallBack(uploadMsg,fileChooserParams);
+            return true;
+        }
+
+        //重写标题
+        @Override
+        public boolean onJsAlert(WebView view, String url, final String message, JsResult result) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    new AlertDialog.Builder(WebViewActivity2.this)
+                            .setTitle("提示")
+                            .setMessage(""+message)
+                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .setNegativeButton("取消",null)
+                            .show();
+
+                }
+            });
+            result.confirm();//这里必须调用，否则页面会阻塞造成假死
+            return true;
+        }
     }
 
         /**
@@ -448,5 +545,54 @@ public class WebViewActivity2 extends Activity implements View.OnClickListener{
             startActivity(Intent.createChooser(shareIntent, "分享"));
         }
         //                startActivity(shareIntent);
+    }
+
+
+    //拍照  相册
+    public void showOptions() {
+        CharSequence[] sequences = {"相册", "拍照"};
+        android.app.AlertDialog.Builder alertDialog = new android.app.AlertDialog.Builder(this);
+        alertDialog.setOnCancelListener(new ReOnCancelListener());
+        alertDialog.setTitle("选择图片");
+        alertDialog.setItems(sequences, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == 0) {
+
+                            Intent showImgIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            startActivityForResult(showImgIntent, REQUEST_CODE_PICK_IMAGE);
+
+                        } else {
+
+                            File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "pics");
+                            if (!dir.exists()) {
+                                dir.mkdirs();
+                            }
+                            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(dir, "temp.jpg")));
+                            startActivityForResult(cameraIntent, REQUEST_CODE_IMAGE_CAPTURE);
+
+                        }
+                    }
+                }
+        );
+        alertDialog.show();
+    }
+
+    private class ReOnCancelListener implements DialogInterface.OnCancelListener {
+
+        @Override
+        public void onCancel(DialogInterface dialogInterface) {
+            if (mUploadMsg != null) {
+                mUploadMsg.onReceiveValue(null);
+                mUploadMsg = null;
+            }
+
+
+            if (mUploadMessageForAndroid5 != null) {
+                mUploadMessageForAndroid5.onReceiveValue(null);
+                mUploadMessageForAndroid5 = null;
+            }
+        }
     }
 }

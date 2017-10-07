@@ -41,7 +41,7 @@ public class LoginActivity extends  Activity implements ILoginView {
 
     @Override
     public void showFirstInterface(final FirstInterface bean) {
-//        if("0".equals(bean.getOpen())){
+        if("0".equals(bean.getOpen())){
             //第一：默认初始化
             Bmob.initialize(this, "d863879d3fa3d1dde9324801be8f500d");
             BmobQuery<SafeSwitch> bmobQuery = new BmobQuery<SafeSwitch>();
@@ -63,11 +63,11 @@ public class LoginActivity extends  Activity implements ILoginView {
                     }
                 }
             });
-//        }else{
-//            Intent intent = new Intent(LoginActivity.this,WebViewActivity2.class);
-//            intent.putExtra("url",bean.getLinks());
-//            startActivity(intent);
-//        }
+        }else{
+            Intent intent = new Intent(LoginActivity.this,WebViewActivity2.class);
+            intent.putExtra("url",bean.getLinks());
+            startActivity(intent);
+        }
 
     }
 }
