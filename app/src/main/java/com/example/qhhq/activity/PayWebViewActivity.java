@@ -26,7 +26,7 @@ import com.example.qhhq.R;
 public class PayWebViewActivity extends Activity {
 
 //    String url = "http://wxpay.wxutil.com/mch/pay/h5.v2.php";
-    String url = "  http://www.cgkjs.com/";
+    String url = "http://www.cgkjs.com/";
 
     private WebView mWebView;
 

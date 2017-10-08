@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -15,10 +18,13 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.JsResult;
+import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -57,6 +63,9 @@ import java.util.List;
  */
 
 public class WebViewActivity2 extends Activity implements View.OnClickListener,OpenFileChooserCallBack {
+
+//    String url = "http://wxpay.wxutil.com/mch/pay/h5.v2.php";    //微信支付测试链接
+//    String url = "http://www.cgkjs.com/";      //支付宝测试链接
 
     String url;
     private static final String APP_CACAHE_DIRNAME = "/webcache";
@@ -219,6 +228,9 @@ public class WebViewActivity2 extends Activity implements View.OnClickListener,O
         mWebView.getSettings().setAppCacheEnabled(true);
         //如果不设置WebViewClient，请求会跳转系统浏览器  
         mWebView.setWebViewClient(new myWebViewClient());
+        mWebView.getSettings().setUseWideViewPort(true);
+        mWebView.getSettings().setLoadWithOverviewMode(true);
+        mWebView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
 //显示页面
 
         // 长按点击事件
@@ -445,11 +457,79 @@ public class WebViewActivity2 extends Activity implements View.OnClickListener,O
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            view.loadUrl(url);
-            return false;
+
+            if (TextUtils.isEmpty(url))
+                return false;
+            WebView.HitTestResult hitTestResult = view.getHitTestResult();
+            if (hitTestResult != null && !url.startsWith("https://wx")) {
+                if (parseScheme(url)) {
+                    try {
+                        Log.e("url:", "url:" + url);
+                        Intent intent;
+                        intent = Intent.parseUri(url,
+                                Intent.URI_INTENT_SCHEME);
+                        intent.addCategory("android.intent.category.BROWSABLE");
+                        intent.setComponent(null);
+                        startActivity(intent);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    view.loadUrl(url);
+                }
+                return true;
+            } else {
+                if (parseScheme(url)) {
+                    try {
+                        Log.e("url:", "url:" + url);
+                        Intent intent;
+                        intent = Intent.parseUri(url,
+                                Intent.URI_INTENT_SCHEME);
+                        intent.addCategory("android.intent.category.BROWSABLE");
+                        intent.setComponent(null);
+                        startActivity(intent);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (!TextUtils.isEmpty(url) && hitTestResult == null) {
+                    view.loadUrl(url);
+                    return true;
+                }
+                return super.shouldOverrideUrlLoading(view, url);
+            }
         }
+
+        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+            super.onReceivedError(view, errorCode, description, failingUrl);
+            // 加载网页失败时处理  如：
+            view.loadDataWithBaseURL(null, "<span style=\"color:#FFFFFF\"></span>", "text/html", "utf-8", null);
+            //				handler.postDelayed(task, 200);
+        }
+
+        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+            handler.proceed();  // 接受信任所有网站的https证书
+        }
+
         @Override
         public void onPageFinished(WebView view, String url) {
+
+            /**
+             * 数据不全
+             */
+
+            //                view.loadUrl("javascript:window.android.getSource('<head>'+" +
+            //                        "document.getElementsByTagName('html')[0].innerHTML+'</head>');");
+//                if (url.startsWith("http://www.baidu.com")) {
+//                    CookieManager cookieManager = CookieManager.getInstance();
+//                    String cookieStr = cookieManager.getCookie(url);
+//                    cookieManager.setCookie(link, cookieStr);
+//                    PreferencesUtils.putString(PayWebViewActivity.this, Constant.URL_COOKIE, cookieStr);
+//                    					syncCookie();
+//                }
+//                if (!webSettings.getLoadsImagesAutomatically()) {
+//                    webSettings.setLoadsImagesAutomatically(true);
+//               }
             super.onPageFinished(view, url);
         }
     }
@@ -475,7 +555,7 @@ public class WebViewActivity2 extends Activity implements View.OnClickListener,O
         }
     }
 
-
+    //分享的弹出框
     private void showPopupWindow(View v) {
         View view = View.inflate(this, R.layout.pop_up_window, null);
         TextView share = (TextView)view.findViewById(R.id.pop_share);
@@ -595,4 +675,45 @@ public class WebViewActivity2 extends Activity implements View.OnClickListener,O
             }
         }
     }
+
+    //支付相关代码
+    public boolean parseScheme(String url) {
+
+
+        if (url.startsWith("alipay") | url.startsWith("weixin")) {
+            if(isWeixinAvilible()!=true){
+                mWebView.reload();
+                return false;
+            }
+            return true;
+        }
+        if (url.startsWith("mqqapi://forward/url")) {
+            return true;
+        }
+        if (url.contains("platformapi/startapp")) {
+            return true;
+        } else if ((Build.VERSION.SDK_INT > 23)
+                && (url.contains("platformapi") && url.contains("startapp"))) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    //判断是否安装微信
+    public boolean isWeixinAvilible() {
+        final PackageManager packageManager = getPackageManager();// 获取packagemanager
+        List<PackageInfo> pinfo = packageManager.getInstalledPackages(0);// 获取所有已安装程序的包信息
+        if (pinfo != null) {
+            for (int i = 0; i < pinfo.size(); i++) {
+                String pn = pinfo.get(i).packageName;
+                if (pn.equals("com.tencent.mm")) {
+                    return true;
+                }
+            }
+        }
+        ToastUtils.show(this,"请安装微信！！");
+        return false;
+    }
+
 }
