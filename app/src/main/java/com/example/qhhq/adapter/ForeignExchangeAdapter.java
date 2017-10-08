@@ -37,7 +37,12 @@ public class ForeignExchangeAdapter extends BaseQuickAdapter<LiveBroadCast, Base
     @Override
     protected void convert(BaseViewHolder helper, LiveBroadCast item) {
         helper.setText(R.id.tv_title_fore_excha,item.getTile());
-        helper.setText(R.id.tv_titme_fore_excha,"发布时间:"+ DateUtil.timedate(item.getPublishTime()));
+        try {
+            helper.setText(R.id.tv_titme_fore_excha,"发布时间:"+ DateUtil.timedate(item.getPublishTime()));
+        }catch (Exception e){
+            helper.setText(R.id.tv_titme_fore_excha,"发布时间:");
+        }
+
         // 加载网络图片
         Glide.with(mContext).load(item.getPictureUrl()).crossFade().into((ImageView) helper.getView(R.id.iv_fore_excha));
         helper.setImageResource(R.id.iv_vido_go_fore_excha,R.drawable.vido_go);

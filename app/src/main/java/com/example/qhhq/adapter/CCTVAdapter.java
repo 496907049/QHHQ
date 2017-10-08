@@ -25,7 +25,11 @@ public class CCTVAdapter extends BaseQuickAdapter<CCTV, BaseViewHolder> {
     protected void convert(BaseViewHolder helper, CCTV item) {
         helper.setText(R.id.tv_title,  TextLengthUtil.textLengthTo5(item.getTitle()));
         helper.setText(R.id.tv_content, "   "+ TextLengthUtil.textLengthTo10(item.getDescription()));
-        helper.setText(R.id.tv_time, DateUtil.timedate(item.getAddTime()));
+        try {
+            helper.setText(R.id.tv_time, DateUtil.timedate(item.getAddTime()));
+        }catch (Exception e){
+            helper.setText(R.id.tv_time, "");
+        }
         // 加载网络图片
         Glide.with(mContext).load(item.getThumb()).crossFade().into((ImageView) helper.getView(R.id.icon));
 

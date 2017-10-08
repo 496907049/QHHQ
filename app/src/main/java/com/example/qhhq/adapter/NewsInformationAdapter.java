@@ -38,7 +38,12 @@ public class NewsInformationAdapter extends BaseQuickAdapter<NewsInformation, Ba
     protected void convert(BaseViewHolder helper, NewsInformation item) {
         helper.setText(R.id.tv1,item.getTitle());
         helper.setText(R.id.tv2, TextLengthUtil.textLengthTo20(item.getDescription()));
-        helper.setText(R.id.tv3,"时间："+ DateUtil.timedate(item.getAddTime()));
+        try {
+            helper.setText(R.id.tv3,"时间："+ DateUtil.timedate(item.getAddTime()));
+        }catch (Exception e){
+            helper.setText(R.id.tv3,"时间");
+        }
+
         // 加载网络图片
         Glide.with(mContext).load(item.getThumb()).crossFade().into((ImageView) helper.getView(R.id.img1));
     }

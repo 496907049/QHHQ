@@ -21,7 +21,7 @@
 
             <ImageView
                 android:id="@+id/img_zi_xun"
-                android:layout_width="20dp"
+                android:layout_width="10dp"
                 android:layout_height="60dp"
                 android:layout_weight="1"
                 android:layout_gravity="center"
@@ -31,7 +31,7 @@
 
             <ImageView
                 android:id="@+id/img_mei_lian_chu"
-                android:layout_width="20dp"
+                android:layout_width="10dp"
                 android:layout_height="60dp"
                 android:layout_weight="1"
                 android:background="@drawable/mei_lian_chu"
@@ -40,7 +40,7 @@
 
             <ImageView
                 android:id="@+id/img_yuan_you"
-                android:layout_width="20dp"
+                android:layout_width="10dp"
                 android:layout_height="60dp"
                 android:layout_weight="1"
                 android:background="@drawable/yuan_you"
@@ -49,7 +49,7 @@
 
             <ImageView
                 android:id="@+id/img_gui_jing_shu"
-                android:layout_width="20dp"
+                android:layout_width="10dp"
                 android:layout_height="60dp"
                 android:layout_weight="1"
                 android:background="@drawable/gui_jin_shu"

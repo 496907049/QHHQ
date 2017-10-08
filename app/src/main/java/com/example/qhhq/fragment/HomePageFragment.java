@@ -126,11 +126,11 @@ public class HomePageFragment extends Fragment implements IHomePageView, SwipeRe
         sliderLayout = (SliderLayout) view.findViewById(R.id.slider);
         indicator = (PagerIndicator) view.findViewById(R.id.custom_indicator);
         //准备好要显示的数据
-        List<String> imageUrls = new ArrayList<>();
+        List<Integer> imageUrls = new ArrayList<>();
         final List<String> descriptions = new ArrayList<>();
-        imageUrls.add("http://m.360buyimg.com/mobilecms/s300x98_jfs/t2416/102/20949846/13425/a3027ebc/55e6d1b9Ne6fd6d8f.jpg");
-        imageUrls.add("http://m.360buyimg.com/mobilecms/s300x98_jfs/t1507/64/486775407/55927/d72d78cb/558d2fbaNb3c2f349.jpg");
-        imageUrls.add("http://m.360buyimg.com/mobilecms/s300x98_jfs/t1363/77/1381395719/60705/ce91ad5c/55dd271aN49efd216.jpg");
+        imageUrls.add(R.drawable.lunbo1);
+        imageUrls.add(R.drawable.lunbo2);
+        imageUrls.add(R.drawable.lunbo3);
         descriptions.add("");
         descriptions.add("");
         descriptions.add("");
