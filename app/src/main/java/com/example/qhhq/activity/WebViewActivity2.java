@@ -228,10 +228,20 @@ public class WebViewActivity2 extends Activity implements View.OnClickListener,O
         mWebView.getSettings().setAppCacheEnabled(true);
         //如果不设置WebViewClient，请求会跳转系统浏览器  
         mWebView.setWebViewClient(new myWebViewClient());
-        mWebView.getSettings().setUseWideViewPort(true);
-        mWebView.getSettings().setLoadWithOverviewMode(true);
+        //缩放
+        // 设置可以支持缩放
+        mWebView.getSettings().setSupportZoom(true);
+        // 设置出现缩放工具
+        mWebView.getSettings().setBuiltInZoomControls(true);
+        //隐藏webview缩放按钮
+        mWebView.getSettings().setDisplayZoomControls(false);
+
+        //自适应屏幕
         mWebView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-//显示页面
+//        mWebView.getSettings().setLoadWithOverviewMode(true);
+//        //扩大比例的缩放
+//        mWebView.getSettings().setUseWideViewPort(true);
+
 
         // 长按点击事件
         mWebView.setOnLongClickListener(new View.OnLongClickListener() {

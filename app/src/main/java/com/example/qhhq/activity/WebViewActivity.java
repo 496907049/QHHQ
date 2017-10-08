@@ -121,6 +121,7 @@ public class WebViewActivity extends Activity {
                     final int size = nodes.size();
                     for (int i = 0; i < nodes.size(); i++) {
                         Node node = (Node) nodes.elementAt(i);
+                        String a = node.getText();
                         if("div class=\"nei content snei\"".equals(node.getText())){
                             NodeList titleList = node.getChildren();
                             title = titleList.elementAt(1).toHtml();

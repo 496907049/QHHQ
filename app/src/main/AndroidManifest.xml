@@ -111,6 +111,8 @@
         </activity>
         <activity android:name=".activity.InternationalFormActivity" >
         </activity>
+        <activity android:name=".activity.WebViewActivity1" >
+        </activity>
         <activity android:name=".activity.WebViewActivity2" >
         </activity>
         <activity android:name=".activity.PayWebViewActivity" >

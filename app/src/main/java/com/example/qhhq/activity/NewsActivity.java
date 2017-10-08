@@ -71,7 +71,7 @@ public class NewsActivity extends Activity implements INewsView, SwipeRefreshLay
         adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                Intent intent = new Intent(NewsActivity.this,WebViewActivity.class);
+                Intent intent = new Intent(NewsActivity.this,WebViewActivity1.class);
                 intent.putExtra("url",beanList.get(position).getUrl());
                 startActivity(intent);
             }
