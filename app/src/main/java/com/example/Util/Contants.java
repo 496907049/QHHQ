@@ -9,6 +9,10 @@ public final class Contants {
 	//实时资讯
 	public static String HTTP_News = "http://api.metal.app887.com/api/Articles.action?keyword=&kind=&npc=0&opc=25&type=%E8%B4%B5%E9%87%91%E5%B1%9E%E8%B5%84%E8%AE%AF&uid=1";
 
+	//资源的接口
+	public static String INFO_HTTP_BASE = "http://appapi.kxt.com/data/jianwen2?system=ios&version=5.3.2&idfv=CB8DA917-210E-45C0-8CB1-D2049A6B11A2";    //资讯的接口
+
+
 	//发现界面的接口
 	public static String MACROSCOPIC_HTTP_BASE = "http://appapi.kxt.com/data/jianwen2?system=ios&version=5.3.2&idfv=CB8DA917-210E-45C0-8CB1-D2049A6B11A2";
 	public static String CCTV_HTTP_BASE = "http://appapi.kxt.com/data/jianwen2?system=ios&version=5.3.2&idfv=CB8DA917-210E-45C0-8CB1-D2049A6B11A2";
